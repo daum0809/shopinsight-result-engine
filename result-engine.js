@@ -34,5 +34,18 @@ export function buildResult(rows){
    const cr=rows.filter(r=>r.channel===ch), cm=group(cr,r=>String(r.date||"").slice(0,7));
    for(const p of Object.keys(cm).sort()) channel_kpis[ch][p]=calculateKPIs(cm[p]);
  }
- return {schema_version:"1.0",currentPeriod,previousPeriod,current,previous,changes,monthly_kpis,channel_kpis};
+ const currentRows=currentPeriod?byMonth[currentPeriod]:[];
+ const coupangRows=currentRows.filter(r=>r.channel==="쿠팡");
+ const undercutRows=coupangRows.filter(r=>{
+   const unit=n(r.unit_price), competitor=n(r.competitor_min_price);
+   return unit>0 && competitor>0 && competitor<unit;
+ });
+ const undercutProducts=[...new Set(undercutRows.map(r=>r.product).filter(Boolean))].sort();
+ const diagnostics={
+   coupang_undercut_product_count:undercutProducts.length,
+   coupang_undercut_products:undercutProducts,
+   evidence_rule:"channel=쿠팡 AND competitor_min_price < unit_price",
+   causality_note:"가격 열세와 전환율 하락이 함께 관찰되지만 이 데이터만으로 인과관계를 확정하지 않는다."
+ };
+ return {schema_version:"1.1",currentPeriod,previousPeriod,current,previous,changes,monthly_kpis,channel_kpis,diagnostics};
 }
