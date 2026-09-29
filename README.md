@@ -41,3 +41,7 @@ LLM이 매출·ROAS·CVR 등의 산술 계산을 직접 하지 않습니다. 동
 
 ## OpenAI 연결 시 보안
 OpenAI API Key를 GitHub Pages나 브라우저 JavaScript에 직접 넣지 않습니다. 실제 AI 호출은 서버 또는 서버리스 함수에서 수행합니다.
+
+
+## 팀 통합
+팀 저장소에 직접 쓰기 권한이 없는 경우 이 저장소의 `result-engine.js`를 가져가면 됩니다. 상세 계약은 [TEAM_HANDOFF.md](TEAM_HANDOFF.md)를 참고하세요.
